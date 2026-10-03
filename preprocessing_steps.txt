@@ -1,0 +1,26 @@
+PREPROCESSING STEPS
+
+1. Excel: grouped parents' qualification codes 
+   New column I (Mother qualification), from old column K:
+   =IF(ISNUMBER(MATCH(K2,{2,3,4,5,6,40,41,42,43,44},0)),"Higher",IF(ISNUMBER(MATCH(K2,{1,9,10,12,14,18,22,27,39},0)),"Secondary",IF(ISNUMBER(MATCH(K2,{11,19,26,29,30,35,36,37,38},0)),"Basic",IF(K2=34,"Unknown","CHECK"))))
+   New column J (Father qualification), from old column L:
+   =IF(ISNUMBER(MATCH(L2,{2,3,4,5,6,40,41,42,43,44},0)),"Higher",IF(ISNUMBER(MATCH(L2,{1,9,10,12,13,14,18,20,22,25,27,31,33,39},0)),"Secondary",IF(ISNUMBER(MATCH(L2,{11,19,26,29,30,35,36,37,38},0)),"Basic",IF(L2=34,"Unknown","CHECK"))))
+
+2. Excel: removed columns before loading into Weka
+   - International: highly correlated with Nacionality (r = 0.91), kept Nacionality
+   - Mother's occupation, Father's occupation: [your reason]
+
+3. Weka: removed old qualification code columns
+   weka.filters.unsupervised.attribute.Remove -R 11,12
+
+4. Weka: numeric to nominal
+   weka.filters.unsupervised.attribute.NumericToNominal -R 1,2,4,5,6,8,12-17
+
+5. Weka: binary target (Dropout + Enrolled -> NotOnTime), class set to "No class" while applying
+   weka.filters.unsupervised.attribute.MergeTwoValues -C last -F 1 -S 3
+   weka.filters.unsupervised.attribute.RenameNominalValues -R last -N Dropout_Enrolled:NotOnTime
+   Result: Graduate 2209 / NotOnTime 2215 -> saved as full.arff
+
+6. Weka: stratified 80/20 split
+   weka.filters.supervised.instance.StratifiedRemoveFolds -S 1 -N 5 -F 1        -> test.arff
+   weka.filters.supervised.instance.StratifiedRemoveFolds -S 1 -V -N 5 -F 1     -> train.arff
