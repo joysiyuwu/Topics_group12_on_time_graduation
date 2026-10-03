@@ -23,4 +23,11 @@ PREPROCESSING STEPS
 
 6. Weka: stratified 80/20 split
    weka.filters.supervised.instance.StratifiedRemoveFolds -S 1 -N 5 -F 1        -> test.arff
-   weka.filters.supervised.instance.StratifiedRemoveFolds -S 1 -V -N 5 -F 1     -> train.arff
+   weka.filters.supervised.instance.StratifiedRemoveFolds -S 1 -V -N 5 -F 1     -> training.arff
+
+7. Weka: stage-specific datasets (same steps on train.arff and test.arff)
+   Removed 2nd semester columns (attributes 25-30) -> training_stage2.arff / test_stage2.arff
+   weka.filters.unsupervised.attribute.Remove -R 25-30
+   Then removed 1st semester columns (attributes 19-24) -> training_stage1.arff / test_stage1.arff
+   weka.filters.unsupervised.attribute.Remove -R 19-24
+   2nd semester data is excluded in both stages because it is not available at the time of prediction.
