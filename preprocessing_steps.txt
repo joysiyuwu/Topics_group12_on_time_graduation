@@ -18,8 +18,10 @@ PREPROCESSING STEPS
 
 5. Weka: binary target (Dropout + Enrolled -> NotOnTime), class set to "No class" while applying
    weka.filters.unsupervised.attribute.MergeTwoValues -C last -F 1 -S 3
-   weka.filters.unsupervised.attribute.RenameNominalValues -R last -N Dropout_Enrolled:NotOnTime
-   Result: Graduate 2209 / NotOnTime 2215 -> saved as full.arff
+   Result: Graduate 2209 / NotOnTime 2215 -> saved as processed_data.arff
+
+   Note: the merged class is labelled "Dropout_Enrolled" in all Weka files and outputs.
+   In the report it is referred to as "NotOnTime" (not graduating on time).
 
 6. Weka: stratified 80/20 split
    weka.filters.supervised.instance.StratifiedRemoveFolds -S 1 -N 5 -F 1        -> test.arff
